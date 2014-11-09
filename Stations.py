@@ -10,7 +10,10 @@ class Arrival(object):
 
 
     def set_next_event(self,passenger):
-        self.next_event = passenger.arrival
+        if passenger is not None:
+            self.next_event = passenger.arrival
+        else:
+            self.next_event = passenger
     def set_next_passenger(self,passenger):
         self.passenger = passenger
 
@@ -44,13 +47,15 @@ class CheckIn(object):
     def generate_total_time(self, bag_number):
         return self.generate_print_time() + self.generate_check_time(bag_number) + self.generate_delay()
 
-    def dock_passenger(self,customer):
-        self.customer = customer
+    def dock_passenger(self,passenger):
+        self.passenger = passenger
         self.is_free = False
 
     def release_passenger(self):
-        self.customer = None
+        self.passenger = None
         self.is_free = True
+
+
     def set_next_event(self, time):
         self.next_event = time
 
@@ -62,24 +67,39 @@ class Security(object):
         self.next_event = None
 
     def generate_screen_time(self):
-        return npr.exponential(scale=(1/3),size=1)
+        return npr.exponential(scale=(float(1)/3),size=1)
 
-    def dock_passenger(self,customer):
-        self.customer = customer
+    def dock_passenger(self,passenger):
+        self.passenger = passenger
         self.is_free = False
 
     def release_passenger(self):
-        self.customer = None
+        self.passenger = None
         self.is_free = True
+
+    def set_next_event(self, time):
+        self.next_event = time
 
 class Gate(object):
     pass
     #need refund mechanism
 
-class CommuterFlight(object):
+
+
+class Flight(object):
+    pass
+
+
+class CommuterFlight(Flight):
     def __init__(self):
         self.next_event = 30
 
-class InternationalFlight(object):
+    def set_next_event(self):
+        self.next_event += 30
+
+class InternationalFlight(Flight):
     def __init__(self):
-        self.next_event = 0
+        self.next_event = 300
+
+    def set_next_event(self):
+        self.next_event += 300
